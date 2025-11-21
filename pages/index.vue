@@ -1,10 +1,14 @@
 <script setup language="ts">
 // import('highcharts/highcharts').Options
-const temperatureData = [[1763506800000, 20],[1763590000000, 22],[1763593200000, 21]];
+const temperatureData = ref([[1763506800000, 20],[1763590000000, 22],[1763593200000, 21]]);
 
-const rainData = [[1763506800000, 1],[1763590000000, 0],[1763593200000, 1]];
+const rainData = ref([[1763506800000, 1],[1763590000000, 0],[1763593200000, 1]]);
 
-const humidityData = [[1763506800000, 1.42],[1763590000000, 1.4],[1763593200000, 1.43]];
+const humidityData = ref([[1763506800000, 1.42],[1763590000000, 1.4],[1763593200000, 1.43]]);
+
+const pressureData = ref([[1763506800000, 1003.42],[1763590000000, 1022.4],[1763593200000, 1023.43]]);
+
+const qualityData = ref([[1763506800000, 2032],[1763590000000, 2040],[1763593200000, 2041]]);
 
 const theSacifice = {
   chart: {
@@ -17,6 +21,11 @@ const theSacifice = {
   },
   xAxis: {
     type: 'datetime',
+  },
+  yAxis: {
+    title: {
+      text: ''
+    }
   },
   legend: {
     enabled: false
@@ -35,8 +44,8 @@ const theSacifice = {
           y2: 1
         },
         stops: [
-          [0, 'rgb(199, 113, 243)'],
-          [0.7, 'rgb(76, 175, 254)']
+          [0, '#706ca1'],
+          [1, '#ffffff']
         ]
       },
       states: {
@@ -50,8 +59,8 @@ const theSacifice = {
 
   series: [{
     type: 'area',
-    name: 'Regen',
-    data: [0,0]
+    name: '',
+    data: [0]
   }]
 }
 
@@ -69,43 +78,13 @@ const temperatureGraph = {
   },
   yAxis: {
     title: {
-      text: 'Graden Celcius'
+      text: 'Graden Celcius (°C)'
     }
   },
-  legend: {
-    enabled: false
-  },
-  plotOptions: {
-    area: {
-      marker: {
-        radius: 2
-      },
-      lineWidth: 1,
-      color: {
-        linearGradient: {
-          x1: 0,
-          y1: 0,
-          x2: 0,
-          y2: 1
-        },
-        stops: [
-          [0, 'rgb(199, 113, 243)'],
-          [0.7, 'rgb(76, 175, 254)']
-        ]
-      },
-      states: {
-        hover: {
-          lineWidth: 5
-        }
-      },
-      threshold: null
-    }
-  },
-
   series: [{
     type: 'area',
-    name: 'Graden Celcius',
-    data: temperatureData
+    name: '°C',
+    data: temperatureData.value,
   }]
 }
 
@@ -126,40 +105,10 @@ const rainGraph = {
       text: 'Regen'
     }
   },
-  legend: {
-    enabled: false
-  },
-  plotOptions: {
-    area: {
-      marker: {
-        radius: 2
-      },
-      lineWidth: 1,
-      color: {
-        linearGradient: {
-          x1: 0,
-          y1: 0,
-          x2: 0,
-          y2: 1
-        },
-        stops: [
-          [0, 'rgb(199, 113, 243)'],
-          [0.7, 'rgb(76, 175, 254)']
-        ]
-      },
-      states: {
-        hover: {
-          lineWidth: 5
-        }
-      },
-      threshold: null
-    }
-  },
-
   series: [{
     type: 'area',
     name: 'Regen',
-    data: rainData
+    data: rainData.value,
   }]
 }
 
@@ -180,40 +129,58 @@ const humidityGraph = {
       text: 'gram water per kilogram lucht (g/kg)'
     }
   },
-  legend: {
-    enabled: false
-  },
-  plotOptions: {
-    area: {
-      marker: {
-        radius: 2
-      },
-      lineWidth: 1,
-      color: {
-        linearGradient: {
-          x1: 0,
-          y1: 0,
-          x2: 0,
-          y2: 1
-        },
-        stops: [
-          [0, 'rgb(199, 113, 243)'],
-          [0.7, 'rgb(76, 175, 254)']
-        ]
-      },
-      states: {
-        hover: {
-          lineWidth: 5
-        }
-      },
-      threshold: null
-    }
-  },
-
   series: [{
     type: 'area',
     name: 'g/kg',
-    data: humidityData
+    data: humidityData.value,
+  }]
+}
+
+const pressureGraph = {
+  chart: {
+    zooming: {
+      type: 'x'
+    }
+  },
+  title: {
+    text: 'Luchtdruk over tijd'
+  },
+  xAxis: {
+    type: 'datetime',
+  },
+  yAxis: {
+    title: {
+      text: 'hectopascal (hPs)'
+    }
+  },
+  series: [{
+    type: 'area',
+    name: 'hPs',
+    data: pressureData.value,
+  }]
+}
+
+const qualityGraph = {
+  chart: {
+    zooming: {
+      type: 'x'
+    }
+  },
+  title: {
+    text: 'Luchtkwaliteit over tijd'
+  },
+  xAxis: {
+    type: 'datetime',
+  },
+  yAxis: {
+    title: {
+      text: 'deeltjes per miljoen (ppm)'
+    }
+  },
+  series: [{
+    type: 'area',
+    name: 'ppm',
+    data: qualityData.value,
   }]
 }
 
@@ -222,36 +189,80 @@ const graph = ref(theSacifice)
 const graphTo = (newGraph) => {
   graph.value = newGraph
 }
+
+const getLatestData = (data) => {
+  console.log(data.length)
+  return data[data.length - 1][1]
+}
+
+const getLatestTime = () => {
+  let time = new Date(temperatureData.value[temperatureData.value.length - 1][0])
+  return time.toLocaleString()
+}
+
+const hotswap = () => {
+  let temporaryData = temperatureData.value
+  temporaryData[temporaryData.length - 1][1] = -temporaryData[temporaryData.length - 1][1]
+  temperatureData.value = temporaryData
+}
+
 // onMounted(() => {
-//   graphTo(theSacifice);
-//   graphTo(temperatureGraph);
+//   graph.value = temperatureGraph;
 // })
 </script>
 <template>
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  {{temperatureData.value}}
+
   <div class="m-[100px] flex justify-between">
     <div>
       <p class="bold text-6xl">Data:</p>
-      <p class="text-4xl">Temperatuur:</p>
-      <p class="text-4xl">Regen:</p>
-      <p class="text-4xl">Luchtvochtigheid:</p>
-      <p class="text-4xl">Luchtdruk:</p>
-      <p class="text-4xl">Luchtkwailiteit:</p>
-      <p class="text-4xl">Tijd:</p>
-    </div>
-    <div>
-      <img src="/media/png-transparent-rain-rain-blue-cloud-drop-thumbnail.png">
-    </div>
-  </div>
 
+      <p class="text-4xl">
+        <span>Temperatuur:</span> <span>{{getLatestData(temperatureData)}}</span> <span>&deg;C</span>
+      </p>
+
+      <p class="text-4xl">
+        <span>Regen:</span>
+        <span v-if="getLatestData(rainData) === 1"> Ja</span>
+        <span v-else> Nee</span>
+      </p>
+
+      <p class="text-4xl">
+         <span>Luchtvochtigheid:</span> <span>{{getLatestData(humidityData)}}</span> <span>g/kg</span>
+      </p>
+
+      <p class="text-4xl">
+        <span>Luchtdruk:</span> <span>{{getLatestData(pressureData)}}</span> <span>hPs</span>
+      </p>
+
+      <p class="text-4xl">
+        <span>Luchtkwaliteit:</span> <span>{{getLatestData(qualityData)}}</span> <span>ppm</span>
+      </p>
+
+      <p class="text-4xl">
+        <span>Tijd:</span> <span>{{getLatestTime()}}</span>
+      </p>
+    </div>
+    <img src="/media/png-transparent-rain-rain-blue-cloud-drop-thumbnail.png">
+  </div>
+  <button @click="hotswap">click me plssss</button>
   <div class="dropdown">
+
     <button class="dropbtn">Dropdown</button>
+
     <div class="dropdown-content">
-      <a @click="graphTo(temperatureGraph)">Temperature over time</a>
-      <a @click="graphTo(rainGraph)">Rain over time</a>
-      <a @click="graphTo(humidityGraph)">Humidity over time</a>
-      <a @click="graph.series.data = humidityData">Air pressure over time</a>
-      <a onclick="graphToQuality()">Air quality over time</a>
+      <div @click="graphTo(temperatureGraph)">Temperatuur over tijd</div>
+
+      <div @click="graphTo(rainGraph)">Regen over tijd</div>
+
+      <div @click="graphTo(humidityGraph)">Luchtvochtigheid over tijd</div>
+
+      <div @click="graphTo(pressureGraph)">Luchtdruk over tijd</div>
+
+      <div @click="graphTo(qualityGraph)">Luchtkwaliteit over tijd</div>
     </div>
   </div>
 
@@ -287,7 +298,7 @@ const graphTo = (newGraph) => {
 }
 
 /* Links inside the dropdown */
-.dropdown-content a {
+.dropdown-content div {
   color: black;
   padding: 12px 16px;
   text-decoration: none;
@@ -295,7 +306,7 @@ const graphTo = (newGraph) => {
 }
 
 /* Change color of dropdown links on hover */
-.dropdown-content a:hover {background-color: #ddd;}
+.dropdown-content div:hover {background-color: #ddd;}
 
 /* Show the dropdown menu on hover */
 .dropdown:hover .dropdown-content {display: block;}
