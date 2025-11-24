@@ -1,16 +1,88 @@
-<script setup language="ts">
-// import('highcharts/highcharts').Options
-const temperatureData = ref([[1763506800000, 20],[1763590000000, 22],[1763593200000, 21]]);
+<script setup lang="ts">
 
-const rainData = ref([[1763506800000, 1],[1763590000000, 0],[1763593200000, 1]]);
+import type {WeatherData} from "~/types/models/WeatherData";
 
-const humidityData = ref([[1763506800000, 1.42],[1763590000000, 1.4],[1763593200000, 1.43]]);
+const {
+  data: fetchData
+} = useFetch<WeatherData[]>("http://localhost:5194/ws/weather/data")
 
-const pressureData = ref([[1763506800000, 1003.42],[1763590000000, 1022.4],[1763593200000, 1023.43]]);
+// const temperatureData = ref([]);
+const temperatureData = computed(() => {
+  let data = [];
 
-const qualityData = ref([[1763506800000, 2032],[1763590000000, 2040],[1763593200000, 2041]]);
+  for (let fetchDataKey in fetchData.value) {
+    const val = fetchData.value[fetchDataKey];
 
-const theSacifice = {
+    data.push([
+      (new Date(val.timestamp)).getTime(),
+      val.temperatureCelsius
+    ])
+  }
+
+  return data;
+});
+
+const rainData = computed(() => {
+  let data = [];
+
+  for (let fetchDataKey in fetchData.value) {
+    const val = fetchData.value[fetchDataKey];
+
+    data.push([
+      (new Date(val.timestamp)).getTime(),
+      val.isRaining
+    ])
+  }
+
+  return data;
+});
+
+const humidityData = computed(() => {
+  let data = [];
+
+  for (let fetchDataKey in fetchData.value) {
+    const val = fetchData.value[fetchDataKey];
+
+    data.push([
+      (new Date(val.timestamp)).getTime(),
+      val.humidityPercent //TODO percent??????
+    ])
+  }
+
+  return data;
+});
+
+const pressureData = computed(() => {
+  let data = [];
+
+  for (let fetchDataKey in fetchData.value) {
+    const val = fetchData.value[fetchDataKey];
+
+    data.push([
+      (new Date(val.timestamp)).getTime(),
+      val.airPressureHpa
+    ])
+  }
+
+  return data;
+});
+
+const qualityData = computed(() => {
+  let data = [];
+
+  for (let fetchDataKey in fetchData.value) {
+    const val = fetchData.value[fetchDataKey];
+
+    data.push([
+      (new Date(val.timestamp)).getTime(),
+      val.isRaining //TODO propper data
+    ])
+  }
+
+  return data;
+});
+
+const setupGraph = {
   chart: {
     zooming: {
       type: 'x'
@@ -60,7 +132,7 @@ const theSacifice = {
   series: [{
     type: 'area',
     name: '',
-    data: [0]
+    data: [0],
   }]
 }
 
@@ -184,7 +256,7 @@ const qualityGraph = {
   }]
 }
 
-const graph = ref(theSacifice)
+const graph = ref(setupGraph)
 
 const graphTo = (newGraph) => {
   graph.value = newGraph
@@ -200,21 +272,15 @@ const getLatestTime = () => {
   return time.toLocaleString()
 }
 
-const hotswap = () => {
-  let temporaryData = temperatureData.value
-  temporaryData[temporaryData.length - 1][1] = -temporaryData[temporaryData.length - 1][1]
-  temperatureData.value = temporaryData
-}
+const timeFormat = () => {
 
-// onMounted(() => {
-//   graph.value = temperatureGraph;
-// })
+}
 </script>
 <template>
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  {{temperatureData.value}}
+  {{temperatureData}}
 
   <div class="m-[100px] flex justify-between">
     <div>
@@ -248,7 +314,7 @@ const hotswap = () => {
     </div>
     <img src="/media/png-transparent-rain-rain-blue-cloud-drop-thumbnail.png">
   </div>
-  <button @click="hotswap">click me plssss</button>
+  <button @click="hotswap">Graden wisselaar</button>
   <div class="dropdown">
 
     <button class="dropbtn">Dropdown</button>
