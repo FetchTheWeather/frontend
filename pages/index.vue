@@ -1,12 +1,10 @@
-<script setup lang="ts">
-
-import type {WeatherData} from "~/types/models/WeatherData";
+<script setup lang="js">
 
 const {
   data: fetchData
-} = useFetch<WeatherData[]>("http://localhost:5194/ws/weather/data")
+} = useFetch("http://localhost:5194/ws/weather/data")
 
-// const temperatureData = ref([]);
+
 const temperatureData = computed(() => {
   let data= [];
 
@@ -31,6 +29,21 @@ const rainData = computed(() => {
     data.push([
       (new Date(val.timestamp)).getTime(),
       val.isRaining
+    ])
+  }
+
+  return data;
+});
+
+const rainAmountData = computed(() => {
+  let data = [];
+
+  for (let fetchDataKey in fetchData.value) {
+    const val = fetchData.value[fetchDataKey];
+
+    data.push([
+      (new Date(val.timestamp)).getTime(),
+      val.rainfallMm
     ])
   }
 
@@ -67,7 +80,7 @@ const pressureData = computed(() => {
   return data;
 });
 
-const qualityData = computed(() => {
+const windSpeedData = computed(() => {
   let data = [];
 
   for (let fetchDataKey in fetchData.value) {
@@ -75,7 +88,7 @@ const qualityData = computed(() => {
 
     data.push([
       (new Date(val.timestamp)).getTime(),
-      val.isRaining //TODO propper data
+      val.windSpeedKph
     ])
   }
 
@@ -180,7 +193,7 @@ const rainGraph = {
   series: [{
     type: 'area',
     name: 'Regen',
-    data: rainData.value,
+    data: rainAmountData.value,
   }]
 }
 
@@ -232,38 +245,39 @@ const pressureGraph = {
   }]
 }
 
-const qualityGraph = {
+const windSpeedGraph = {
   chart: {
     zooming: {
       type: 'x'
     }
   },
   title: {
-    text: 'Luchtkwaliteit over tijd'
+    text: 'windsnelheid over tijd'
   },
   xAxis: {
     type: 'datetime',
   },
   yAxis: {
     title: {
-      text: 'deeltjes per miljoen (ppm)'
+      text: 'kilometer per uur (Km/h)'
     }
   },
   series: [{
     type: 'area',
-    name: 'ppm',
-    data: qualityData.value,
+    name: 'Km/h',
+    data: windSpeedData.value,
   }]
 }
 
 const graph = ref(setupGraph)
 
 const graphTo = (newGraph) => {
+  console.log(graph.value)
+  console.log(newGraph)
   graph.value = newGraph
 }
 
 const getLatestData = (data) => {
-  console.log(data.length)
   return data[data.length - 1][1]
 }
 
@@ -276,8 +290,6 @@ const getLatestTime = () => {
 <template>
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  {{temperatureData}}
 
   <div class="m-[100px] flex justify-between">
     <div>
@@ -294,7 +306,11 @@ const getLatestTime = () => {
       </p>
 
       <p class="text-4xl">
-         <span>Luchtvochtigheid:</span> <span>{{getLatestData(humidityData)}}</span> <span>g/kg</span>
+        <span>Regenhoeveelheid:</span> <span>{{getLatestData(rainAmountData)}}</span> <span>mm/s</span>
+      </p>
+
+      <p class="text-4xl">
+         <span>Luchtvochtigheid:</span> <span>{{getLatestData(humidityData)}}</span> <span>%</span>
       </p>
 
       <p class="text-4xl">
@@ -302,7 +318,7 @@ const getLatestTime = () => {
       </p>
 
       <p class="text-4xl">
-        <span>Luchtkwaliteit:</span> <span>{{getLatestData(qualityData)}}</span> <span>ppm</span>
+        <span>Windsnelheid:</span> <span>{{getLatestData(windSpeedData)}}</span> <span>Km/h</span>
       </p>
 
       <p class="text-4xl">
@@ -325,7 +341,7 @@ const getLatestTime = () => {
 
         <div @click="graphTo(pressureGraph)">Luchtdruk over tijd</div>
 
-       <div @click="graphTo(qualityGraph)">Luchtkwaliteit over tijd</div>
+       <div @click="graphTo(windSpeedGraph)">Windsnelheid over tijd</div>
       </div>
     </div>
   </div>
