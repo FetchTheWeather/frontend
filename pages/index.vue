@@ -8,7 +8,7 @@ const {
 
 // const temperatureData = ref([]);
 const temperatureData = computed(() => {
-  let data = [];
+  let data= [];
 
   for (let fetchDataKey in fetchData.value) {
     const val = fetchData.value[fetchDataKey];
@@ -272,9 +272,6 @@ const getLatestTime = () => {
   return time.toLocaleString()
 }
 
-const timeFormat = () => {
-
-}
 </script>
 <template>
 
@@ -314,24 +311,24 @@ const timeFormat = () => {
     </div>
     <img src="/media/png-transparent-rain-rain-blue-cloud-drop-thumbnail.png">
   </div>
-  <button @click="hotswap">Graden wisselaar</button>
-  <div class="dropdown">
+  <div>
+    <div class="dropdown">
 
-    <button class="dropbtn">Dropdown</button>
+      <button class="dropbtn">Dropdown</button>
 
-    <div class="dropdown-content">
-      <div @click="graphTo(temperatureGraph)">Temperatuur over tijd</div>
+      <div class="dropdown-content">
+        <div @click="graphTo(temperatureGraph)">Temperatuur over tijd</div>
 
-      <div @click="graphTo(rainGraph)">Regen over tijd</div>
+        <div @click="graphTo(rainGraph)">Regen over tijd</div>
 
-      <div @click="graphTo(humidityGraph)">Luchtvochtigheid over tijd</div>
+        <div @click="graphTo(humidityGraph)">Luchtvochtigheid over tijd</div>
 
-      <div @click="graphTo(pressureGraph)">Luchtdruk over tijd</div>
+        <div @click="graphTo(pressureGraph)">Luchtdruk over tijd</div>
 
-      <div @click="graphTo(qualityGraph)">Luchtkwaliteit over tijd</div>
+       <div @click="graphTo(qualityGraph)">Luchtkwaliteit over tijd</div>
+      </div>
     </div>
   </div>
-
   <highchart
       :options="graph"
       :update="['options.title', 'options.series']"
