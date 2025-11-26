@@ -24,15 +24,28 @@ const unlocked: string[] = [
 </script>
 
 <template>
-
+  <div class="m-[100px] flex justify-between">
+    <div>
+      <p class="text-4xl m-[20px]">
+        <span>Naam: </span> <span>{{name}}</span>
+      </p>
+      <p class="text-4xl m-[20px]">
+        <span>Email: </span> <span>{{email}}</span>
+      </p>
+      <p class="text-4xl m-[20px]">Collection:</p>
+      <div class="bg-[#ddd]">
+        <p>test</p>
+      </div>
+    </div>
+    <div class="p-[100px] bg-white rounded-3xl">
+      <img class="rounded-xl" src="/media/png-transparent-rain-rain-blue-cloud-drop-thumbnail.png"> <!--replace with profile picture-->
+    </div>
+  </div>
   <div v-for="collectable in collection">
-    <p>
-      collectable.name
-    </p>
+    {{collectable.name}}
   </div>
 
 </template>
 
 <style scoped>
-
 </style>
