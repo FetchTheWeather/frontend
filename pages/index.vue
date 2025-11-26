@@ -327,69 +327,29 @@ const getLatestTime = () => {
     </div>
     <img src="/media/png-transparent-rain-rain-blue-cloud-drop-thumbnail.png">
   </div>
-  <div>
-    <div class="dropdown">
+  <div class="m-[100px]">
+    <div class="group relative inline-block dropdown">
 
-      <button class="dropbtn">Dropdown</button>
+      <button class="bg-[#706ca1] p-[10px] rounded-full">Wissel grafiek</button>
 
-      <div class="dropdown-content">
-        <div @click="graphTo(temperatureGraph)">Temperatuur over tijd</div>
+      <div class="dropdown-content hidden absolute z-[1] bg-[#e2e2e2] bg-opacity-80 rounded-xl">
+        <div class="p-[5px] rounded-xl cursor-pointer hover:bg-[#ddd]" @click="graphTo(temperatureGraph)">Temperatuur over tijd</div>
 
-        <div @click="graphTo(rainGraph)">Regen over tijd</div>
+        <div class="p-[5px] rounded-xl cursor-pointer hover:bg-[#ddd]" @click="graphTo(rainGraph)">Regen over tijd</div>
 
-        <div @click="graphTo(humidityGraph)">Luchtvochtigheid over tijd</div>
+        <div class="p-[5px] rounded-xl cursor-pointer hover:bg-[#ddd]" @click="graphTo(humidityGraph)">Luchtvochtigheid over tijd</div>
 
-        <div @click="graphTo(pressureGraph)">Luchtdruk over tijd</div>
+        <div class="p-[5px] rounded-xl cursor-pointer hover:bg-[#ddd]" @click="graphTo(pressureGraph)">Luchtdruk over tijd</div>
 
-       <div @click="graphTo(windSpeedGraph)">Windsnelheid over tijd</div>
+       <div class="p-[5px] rounded-xl cursor-pointer hover:bg-[#ddd]" @click="graphTo(windSpeedGraph)">Windsnelheid over tijd</div>
       </div>
     </div>
   </div>
-  <highchart
+  <highchart class="m-[100px]"
       :options="graph"
       :update="['options.title', 'options.series']"
   />
 </template>
 <style scoped>
-/* Dropdown Button */
-.dropbtn {
-  background-color: #04AA6D;
-  color: white;
-  padding: 16px;
-  font-size: 16px;
-  border: none;
-}
-
-/* The container <div> - needed to position the dropdown content */
-.dropdown {
-  position: relative;
-  display: inline-block;
-}
-
-/* Dropdown Content (Hidden by Default) */
-.dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: #f1f1f1;
-  min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  z-index: 1;
-}
-
-/* Links inside the dropdown */
-.dropdown-content div {
-  color: black;
-  padding: 12px 16px;
-  text-decoration: none;
-  display: block;
-}
-
-/* Change color of dropdown links on hover */
-.dropdown-content div:hover {background-color: #ddd;}
-
-/* Show the dropdown menu on hover */
 .dropdown:hover .dropdown-content {display: block;}
-
-/* Change the background color of the dropdown button when the dropdown content is shown */
-.dropdown:hover .dropbtn {background-color: #3e8e41;}
 </style>
