@@ -6,21 +6,49 @@ const email: string = "john@johnmail.com"
 
 // /api/collection
 const collection: Collectable[] = [
-  {id: "d9e34622-d17e-42d9-8731-b3a984dbd8e8", name: "test achievement, please ignore 1"},
-  {id: "3b35ce14-afb1-4338-a52c-42ddecb2683e", name: "test achievement, please ignore 2"}
+  {id: "1", name: "test achievement, please ignore"},
+  {id: "2", name: "test achievement, please ignore"},
+  {id: "3", name: "test achievement, please ignore"},
+  {id: "4", name: "test achievement, please ignore"},
+  {id: "5", name: "test achievement, please ignore"},
+  {id: "6", name: "test achievement, please ignore"},
+  {id: "7", name: "test achievement, please ignore"},
+  {id: "8", name: "test achievement, please ignore"},
+  {id: "9", name: "test achievement, please ignore"},
+  {id: "10", name: "test achievement, please ignore"},
+  {id: "11", name: "test achievement, please ignore"},
+  {id: "12", name: "test achievement, please ignore"},
+  {id: "13", name: "test achievement, please ignore"},
+  {id: "14", name: "test achievement, please ignore"},
+  {id: "15", name: "test achievement, please ignore"},
+  {id: "16", name: "test achievement, please ignore"},
+  {id: "17", name: "test achievement, please ignore"},
+  {id: "18", name: "test achievement, please ignore"},
+  {id: "19", name: "test achievement, please ignore"},
+  {id: "20", name: "test achievement, please ignore"},
+  {id: "21", name: "test achievement, please ignore"},
+  {id: "22", name: "test achievement, please ignore"},
+  {id: "23", name: "test achievement, please ignore"},
+  {id: "24", name: "test achievement, please ignore"},
+  {id: "25", name: "test achievement, please ignore"},
+  {id: "26", name: "test achievement, please ignore"},
+  {id: "27", name: "test achievement, please ignore"},
+  {id: "28", name: "test achievement, please ignore"},
+  {id: "29", name: "test achievement, please ignore"},
+  {id: "30", name: "test achievement, please ignore"},
+  {id: "31", name: "test achievement, please ignore"},
+  {id: "32", name: "test achievement, please ignore"},
+  {id: "33", name: "test achievement, please ignore"}
 ]
 
 // /api/collection/{userId}
 const unlocked: string[] = [
-  "3b35ce14-afb1-4338-a52c-42ddecb2683e"
+  "2", "3", "30"
 ]
 
-// this is code written by pieter and im too confused to understand it :( so it's commented out rn
-
-// const isUnlocked = (id: string) => {
-//   // return unlocked. // TODO - Find in unlocked array
-//   return false;
-// }
+const isUnlocked = (id: string) => {
+  return unlocked.find((str) => str == id) != undefined;
+}
 </script>
 
 <template>
@@ -32,18 +60,17 @@ const unlocked: string[] = [
       <p class="text-4xl m-[20px]">
         <span>Email: </span> <span>{{email}}</span>
       </p>
-      <p class="text-4xl m-[20px]">Collection:</p>
-      <div class="bg-[#ddd]">
-        <p>test</p>
-      </div>
     </div>
-    <div class="p-[100px] bg-white rounded-3xl">
-      <img class="rounded-xl" src="/media/png-transparent-rain-rain-blue-cloud-drop-thumbnail.png"> <!--replace with profile picture-->
+    <img class="rounded-3xl" src="/media/png-transparent-rain-rain-blue-cloud-drop-thumbnail.png" alt=""> <!--TODO replace with profile picture-->
+  </div>
+  <p class="text-4xl m-[120px]">Collection:</p>
+  <div class="m-[100px] p-[20px] flex justify-evenly flex-wrap bg-[#ddd] rounded-3xl">
+    <div class="m-[30px]" v-for="collectable in collection">
+      <img v-if="isUnlocked(collectable.id)" src="/media/unlocked.png" alt="">
+      <img v-else src="/media/not_unlocked.png" alt="">
     </div>
   </div>
-  <div v-for="collectable in collection">
-    {{collectable.name}}
-  </div>
+
 
 </template>
 
