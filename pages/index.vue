@@ -296,33 +296,33 @@ const getLatestTime = () => {
       <p class="bold text-6xl">Data:</p>
 
       <p class="text-4xl">
-        <span>Temperatuur:</span> <span>{{getLatestData(temperatureData)}}</span> <span>&deg;C</span>
+        Temperatuur: {{getLatestData(temperatureData)}} &deg;C
       </p>
 
       <p class="text-4xl">
-        <span>Regen:</span>
+        Regen:
         <span v-if="getLatestData(rainData) === 1"> Ja</span>
         <span v-else> Nee</span>
       </p>
 
       <p class="text-4xl">
-        <span>Regenhoeveelheid:</span> <span>{{getLatestData(rainAmountData)}}</span> <span>mm/s</span>
+        Regenhoeveelheid:{{getLatestData(rainAmountData)}}mm/s
       </p>
 
       <p class="text-4xl">
-         <span>Luchtvochtigheid:</span> <span>{{getLatestData(humidityData)}}</span> <span>%</span>
+        Luchtvochtigheid: {{getLatestData(humidityData)}}%
       </p>
 
       <p class="text-4xl">
-        <span>Luchtdruk:</span> <span>{{getLatestData(pressureData)}}</span> <span>hPs</span>
+        Luchtdruk: {{getLatestData(pressureData)}} hPs
       </p>
 
       <p class="text-4xl">
-        <span>Windsnelheid:</span> <span>{{getLatestData(windSpeedData)}}</span> <span>Km/h</span>
+        Windsnelheid: {{getLatestData(windSpeedData)}} Km/h
       </p>
 
       <p class="text-4xl">
-        <span>Tijd:</span> <span>{{getLatestTime()}}</span>
+        Tijd: {{getLatestTime()}}
       </p>
     </div>
     <img src="/media/png-transparent-rain-rain-blue-cloud-drop-thumbnail.png">
