@@ -43,11 +43,11 @@ const collection: Collectable[] = [
 
 // /api/collection/{userId}
 const unlocked: string[] = [
-  "2", "3", "30"
+  "2", "3", "4", "9", "14", "1"
 ]
 
 const isUnlocked = (id: string) => {
-  return unlocked.find((str) => str == id) != undefined;
+  return unlocked.find((str) => str === id) != undefined;
 }
 </script>
 
@@ -55,19 +55,21 @@ const isUnlocked = (id: string) => {
   <div class="m-[100px] flex justify-between">
     <div>
       <p class="text-4xl m-[20px]">
-        <span>Naam: </span> <span>{{name}}</span>
+        Naam: {{name}}
       </p>
       <p class="text-4xl m-[20px]">
-        <span>Email: </span> <span>{{email}}</span>
+        Email: {{email}}
       </p>
     </div>
     <img class="rounded-3xl" src="/media/png-transparent-rain-rain-blue-cloud-drop-thumbnail.png" alt=""> <!--TODO replace with profile picture-->
   </div>
-  <p class="text-4xl m-[120px]">Collection:</p>
-  <div class="m-[100px] p-[20px] flex justify-evenly flex-wrap bg-[#ddd] rounded-3xl">
-    <div class="m-[30px]" v-for="collectable in collection">
-      <img v-if="isUnlocked(collectable.id)" src="/media/unlocked.png" alt="">
-      <img v-else src="/media/not_unlocked.png" alt="">
+  <div class="m-[100px]">
+    <p class="text-4xl">Collectie:</p>
+    <div class="p-[20px] flex justify-evenly flex-wrap bg-[#ddd] rounded-3xl">
+      <div class="m-[30px]" v-for="collectable in collection">
+        <img v-if="isUnlocked(collectable.id)" src="/media/unlocked.png" alt="">
+        <img v-else src="/media/not_unlocked.png" alt="">
+      </div>
     </div>
   </div>
 
