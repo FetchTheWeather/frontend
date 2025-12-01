@@ -347,7 +347,7 @@ const getLatestTime = () => {
   </div>
   <highchart class="m-[100px]"
       :options="graph"
-      :update="['options.title', 'options.series']"
+      :update="['options.title', 'options.series', 'yAxis']"
   />
 </template>
 <style scoped>
