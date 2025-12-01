@@ -145,7 +145,7 @@ const setupGraph = {
   series: [{
     type: 'area',
     name: '',
-    data: [0],
+    data: [[[0,1],[1,1]],[[0,1],[1,1]]],
   }]
 }
 
