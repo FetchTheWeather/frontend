@@ -1,12 +1,25 @@
 <script setup lang="js">
 
-const {
-  data: fetchData
-} = useFetch("http://localhost:5194/ws/weather/data")
+const currentTime = new Date();
 
+const fetchData = ref();
+
+let endRange = currentTime;
+
+let startRange = new Date(currentTime.getTime() - 604800000);
+
+const formatTime = (referenceTime) => {
+  return `${referenceTime.getFullYear()}-${referenceTime.getMonth() + 1}-${referenceTime.getDate()}`;
+}
+
+const fetchNewData =  async (startRange, endRange) => {
+  fetchData.value = await $fetch(`https://ftw.pietr.dev/ws/weather/data/range?start=${startRange}&end=${endRange}`)
+}
+
+fetchNewData(formatTime(startRange), formatTime(endRange))
 
 const temperatureData = computed(() => {
-  let data= [];
+  let data = [];
 
   for (let fetchDataKey in fetchData.value) {
     const val = fetchData.value[fetchDataKey];
@@ -272,18 +285,40 @@ const windSpeedGraph = {
 const graph = ref(setupGraph)
 
 const graphTo = (newGraph) => {
-  console.log(graph.value)
-  console.log(newGraph)
   graph.value = newGraph
 }
 
 const getLatestData = (data) => {
+  if(data.length <= 0) return "0";
   return data[data.length - 1][1]
 }
 
 const getLatestTime = () => {
+  if(temperatureData.value.length <= 0) return "0";
   let time = new Date(temperatureData.value[temperatureData.value.length - 1][0])
   return time.toLocaleString()
+}
+
+const getOneWeekAgo = (referenceTime) => {
+  const weakAgo = new Date(referenceTime.getTime() - 604800000);
+  return formatTime(weakAgo)
+}
+
+const getOneWeekAhead = (referenceTime) => {
+  const weakAgo = new Date(referenceTime.getTime() + 604800000);
+  return formatTime(weakAgo)
+}
+
+const fetchFutureData = () => {
+  startRange = endRange
+  endRange = getOneWeekAhead(startRange)
+  fetchNewData(startRange, endRange)
+}
+
+const fetchPastData = () => {
+  endRange = startRange
+  startRange = getOneWeekAgo(endRange)
+  fetchNewData(startRange, endRange)
 }
 
 </script>
@@ -306,7 +341,7 @@ const getLatestTime = () => {
       </p>
 
       <p class="text-4xl">
-        Regenhoeveelheid:{{getLatestData(rainAmountData)}}mm/s
+        Regenhoeveelheid: {{getLatestData(rainAmountData)}} mm/s
       </p>
 
       <p class="text-4xl">
@@ -349,6 +384,10 @@ const getLatestTime = () => {
       :options="graph"
       :update="['options.title', 'options.series']"
   />
+  <div class="m-[100px] flex justify-between">
+    <button class="p-[5px] rounded-xl bg-[#706ca1] text-[#dedede] hover:bg-[#4e4b70]" @click="fetchPastData()">&leftarrow; een week terug</button>
+    <button class="p-[5px] rounded-xl bg-[#706ca1] text-[#dedede] hover:bg-[#4e4b70]" @click="fetchNewData()">een week vooruit &rightarrow;</button>
+  </div>
 </template>
 <style scoped>
 .dropdown:hover .dropdown-content {display: block;}
