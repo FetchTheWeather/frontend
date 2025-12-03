@@ -33,35 +33,35 @@ const temperatureData = computed(() => {
   return data;
 });
 
-const rainData = computed(() => {
-  let data = [];
-
-  for (let fetchDataKey in fetchData.value) {
-    const val = fetchData.value[fetchDataKey];
-
-    data.push([
-      (new Date(val.timestamp)).getTime(),
-      val.isRaining
-    ])
-  }
-
-  return data;
-});
-
-const rainAmountData = computed(() => {
-  let data = [];
-
-  for (let fetchDataKey in fetchData.value) {
-    const val = fetchData.value[fetchDataKey];
-
-    data.push([
-      (new Date(val.timestamp)).getTime(),
-      val.rainfallMm
-    ])
-  }
-
-  return data;
-});
+// const rainData = computed(() => {
+//   let data = [];
+//
+//   for (let fetchDataKey in fetchData.value) {
+//     const val = fetchData.value[fetchDataKey];
+//
+//     data.push([
+//       (new Date(val.timestamp)).getTime(),
+//       val.isRaining
+//     ])
+//   }
+//
+//   return data;
+// });
+//
+// const rainAmountData = computed(() => {
+//   let data = [];
+//
+//   for (let fetchDataKey in fetchData.value) {
+//     const val = fetchData.value[fetchDataKey];
+//
+//     data.push([
+//       (new Date(val.timestamp)).getTime(),
+//       val.rainfallMm
+//     ])
+//   }
+//
+//   return data;
+// });
 
 const humidityData = computed(() => {
   let data = [];
@@ -93,7 +93,7 @@ const pressureData = computed(() => {
   return data;
 });
 
-const windSpeedData = computed(() => {
+const qualityData = computed(() => {
   let data = [];
 
   for (let fetchDataKey in fetchData.value) {
@@ -101,7 +101,7 @@ const windSpeedData = computed(() => {
 
     data.push([
       (new Date(val.timestamp)).getTime(),
-      val.windSpeedKph
+      val.airQualityPpm
     ])
   }
 
@@ -186,29 +186,29 @@ const temperatureGraph = {
   }]
 }
 
-const rainGraph = {
-  chart: {
-    zooming: {
-      type: 'x'
-    }
-  },
-  title: {
-    text: 'Regen over tijd'
-  },
-  xAxis: {
-    type: 'datetime',
-  },
-  yAxis: {
-    title: {
-      text: 'Regen'
-    }
-  },
-  series: [{
-    type: 'area',
-    name: 'Regen',
-    data: rainAmountData.value,
-  }]
-}
+// const rainGraph = {
+//   chart: {
+//     zooming: {
+//       type: 'x'
+//     }
+//   },
+//   title: {
+//     text: 'Regen over tijd'
+//   },
+//   xAxis: {
+//     type: 'datetime',
+//   },
+//   yAxis: {
+//     title: {
+//       text: 'Regen'
+//     }
+//   },
+//   series: [{
+//     type: 'area',
+//     name: 'Regen',
+//     data: rainAmountData.value,
+//   }]
+// }
 
 const humidityGraph = {
   chart: {
@@ -258,27 +258,27 @@ const pressureGraph = {
   }]
 }
 
-const windSpeedGraph = {
+const qualityGraph = {
   chart: {
     zooming: {
       type: 'x'
     }
   },
   title: {
-    text: 'windsnelheid over tijd'
+    text: 'Luchtkwaliteit over tijd'
   },
   xAxis: {
     type: 'datetime',
   },
   yAxis: {
     title: {
-      text: 'kilometer per uur (Km/h)'
+      text: 'parts per million (ppm)'
     }
   },
   series: [{
     type: 'area',
-    name: 'Km/h',
-    data: windSpeedData.value,
+    name: 'ppm',
+    data: qualityData.value,
   }]
 }
 
@@ -334,15 +334,15 @@ const fetchPastData = () => {
         Temperatuur: {{getLatestData(temperatureData)}} &deg;C
       </p>
 
-      <p class="text-4xl">
-        Regen:
-        <span v-if="getLatestData(rainData) === 1"> Ja</span>
-        <span v-else> Nee</span>
-      </p>
+<!--      <p class="text-4xl">-->
+<!--        Regen:-->
+<!--        <span v-if="getLatestData(rainData) === 1"> Ja</span>-->
+<!--        <span v-else> Nee</span>-->
+<!--      </p>-->
 
-      <p class="text-4xl">
-        Regenhoeveelheid: {{getLatestData(rainAmountData)}} mm/s
-      </p>
+<!--      <p class="text-4xl">-->
+<!--        Regenhoeveelheid: {{getLatestData(rainAmountData)}} mm/s-->
+<!--      </p>-->
 
       <p class="text-4xl">
         Luchtvochtigheid: {{getLatestData(humidityData)}}%
@@ -353,7 +353,7 @@ const fetchPastData = () => {
       </p>
 
       <p class="text-4xl">
-        Windsnelheid: {{getLatestData(windSpeedData)}} Km/h
+        Luchtkwaliteit: {{getLatestData(qualityData)}} ppm
       </p>
 
       <p class="text-4xl">
@@ -370,13 +370,13 @@ const fetchPastData = () => {
       <div class="dropdown-content hidden absolute z-[1] bg-[#e2e2e2] bg-opacity-80 rounded-xl">
         <div class="p-[5px] rounded-xl cursor-pointer hover:bg-[#ddd]" @click="graphTo(temperatureGraph)">Temperatuur over tijd</div>
 
-        <div class="p-[5px] rounded-xl cursor-pointer hover:bg-[#ddd]" @click="graphTo(rainGraph)">Regen over tijd</div>
+<!--        <div class="p-[5px] rounded-xl cursor-pointer hover:bg-[#ddd]" @click="graphTo(rainGraph)">Regen over tijd</div>-->
 
         <div class="p-[5px] rounded-xl cursor-pointer hover:bg-[#ddd]" @click="graphTo(humidityGraph)">Luchtvochtigheid over tijd</div>
 
         <div class="p-[5px] rounded-xl cursor-pointer hover:bg-[#ddd]" @click="graphTo(pressureGraph)">Luchtdruk over tijd</div>
 
-       <div class="p-[5px] rounded-xl cursor-pointer hover:bg-[#ddd]" @click="graphTo(windSpeedGraph)">Windsnelheid over tijd</div>
+       <div class="p-[5px] rounded-xl cursor-pointer hover:bg-[#ddd]" @click="graphTo(qualityGraph)">Luchtkwaliteit over tijd</div>
       </div>
     </div>
   </div>
