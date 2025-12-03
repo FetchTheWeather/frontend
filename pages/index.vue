@@ -313,14 +313,30 @@ const fetchFutureData = () => {
   startRange = endRange
   endRange = getOneWeekAhead(startRange)
   fetchNewData(startRange, endRange)
+  imageChange()
 }
 
 const fetchPastData = () => {
   endRange = startRange
   startRange = getOneWeekAgo(endRange)
   fetchNewData(startRange, endRange)
+  imageChange()
 }
 
+const imageChange = () => {
+  if(temperatureData.value.length <= 0) return;
+  else if(getLatestData(temperatureData) <= -6){
+    document.getElementById("weatherImg").src="/media/cold.jpg";
+  }
+  else if(getLatestData(temperatureData) <= 25){
+    document.getElementById("weatherImg").src="/media/normal.jpg";
+  }
+  else{
+    document.getElementById("weatherImg").src="/media/hot.jpg";
+  }
+}
+
+imageChange()
 </script>
 <template>
 
@@ -360,7 +376,9 @@ const fetchPastData = () => {
         Tijd: {{getLatestTime()}}
       </p>
     </div>
-    <img src="/media/png-transparent-rain-rain-blue-cloud-drop-thumbnail.png">
+    <div>
+      <img src="/media/normal.jpg" id="weatherImg" class="rounded-2xl">
+    </div>
   </div>
   <div class="m-[100px]">
     <div class="group relative inline-block dropdown">
@@ -386,7 +404,7 @@ const fetchPastData = () => {
   />
   <div class="m-[100px] flex justify-between">
     <button class="p-[5px] rounded-xl bg-[#706ca1] text-[#dedede] hover:bg-[#8884c2] active:bg-[#4c4a6b]" @click="fetchPastData()">&leftarrow; een week terug</button>
-    <button class="p-[5px] rounded-xl bg-[#706ca1] text-[#dedede] hover:bg-[#8884c2] active:bg-[#4c4a6b]" @click="fetchNewData()">een week vooruit &rightarrow;</button>
+    <button class="p-[5px] rounded-xl bg-[#706ca1] text-[#dedede] hover:bg-[#8884c2] active:bg-[#4c4a6b]" @click="fetchFutureData()">een week vooruit &rightarrow;</button>
   </div>
 </template>
 <style scoped>
