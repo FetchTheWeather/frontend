@@ -325,27 +325,14 @@ const fetchPastData = () => {
 
 const imageChange = () => {
   if(temperatureData.value.length <= 0) return;
-  if(getLatestData(temperatureData) <= -6 && getLatestData(rainData) === true){
-    document.getElementById("weatherImg").src="/media/coldRain.jpg";
+  else if(getLatestData(temperatureData) <= -6){
+    document.getElementById("weatherImg").src="/media/cold.jpg";
   }
-  else if(getLatestData(temperatureData) <= -6 && getLatestData(rainData) === false){
-    document.getElementById("weatherImg").src="/media/coldNormal.jpg";
+  else if(getLatestData(temperatureData) <= 25){
+    document.getElementById("weatherImg").src="/media/normal.jpg";
   }
-  else if(getLatestData(temperatureData) <= 25 && getLatestData(rainData) === true){
-    document.getElementById("weatherImg").src="/media/normalRain.jpg";
-  }
-  else if(getLatestData(temperatureData) <= 25 && getLatestData(rainData) === false){
-    document.getElementById("weatherImg").src="/media/normalNormal.jpg";
-  }
-  else if(getLatestData(rainData) === true){
-    document.getElementById("weatherImg").src="/media/warmRain.jpg";
-  }
-  else if(getLatestData(rainData) === false){
-    document.getElementById("weatherImg").src="/media/warmNormal.jpg";
-  }
-  else {
-    console.log("oopsie")
-    document.getElementById("weatherImg").src="/media/coldRain.jpg";
+  else{
+    document.getElementById("weatherImg").src="/media/hot.jpg";
   }
 }
 
@@ -390,7 +377,7 @@ imageChange()
       </p>
     </div>
     <div>
-      <img src="/media/normalNormal.jpg" id="weatherImg" class="rounded-2xl">
+      <img src="/media/normal.jpg" id="weatherImg" class="rounded-2xl">
     </div>
   </div>
   <div class="m-[100px]">
