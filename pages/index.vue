@@ -16,7 +16,7 @@ const fetchNewData =  async (startRange, endRange) => {
   fetchData.value = await $fetch(`https://ftw.pietr.dev/ws/weather/data/range?start=${startRange}&end=${endRange}`)
 }
 
-fetchNewData(formatTime(startRange), formatTime(endRange))
+await fetchNewData(formatTime(startRange), formatTime(endRange))
 
 const temperatureData = computed(() => {
   let data = [];
