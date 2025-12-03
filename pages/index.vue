@@ -71,7 +71,7 @@ const humidityData = computed(() => {
 
     data.push([
       (new Date(val.timestamp)).getTime(),
-      val.humidityPercent //TODO percent??????
+      val.humidityPercent
     ])
   }
 
@@ -365,7 +365,7 @@ const fetchPastData = () => {
   <div class="m-[100px]">
     <div class="group relative inline-block dropdown">
 
-      <button class="bg-[#706ca1] p-[10px] rounded-full">Wissel grafiek</button>
+      <button class="bg-[#706ca1] p-[10px] text-[#dedede] rounded-full">Wissel grafiek &blacktriangledown;</button>
 
       <div class="dropdown-content hidden absolute z-[1] bg-[#e2e2e2] bg-opacity-80 rounded-xl">
         <div class="p-[5px] rounded-xl cursor-pointer hover:bg-[#ddd]" @click="graphTo(temperatureGraph)">Temperatuur over tijd</div>
@@ -385,8 +385,8 @@ const fetchPastData = () => {
       :update="['options.title', 'options.series', 'yAxis']"
   />
   <div class="m-[100px] flex justify-between">
-    <button class="p-[5px] rounded-xl bg-[#706ca1] text-[#dedede] hover:bg-[#4e4b70]" @click="fetchPastData()">&leftarrow; een week terug</button>
-    <button class="p-[5px] rounded-xl bg-[#706ca1] text-[#dedede] hover:bg-[#4e4b70]" @click="fetchNewData()">een week vooruit &rightarrow;</button>
+    <button class="p-[5px] rounded-xl bg-[#706ca1] text-[#dedede] hover:bg-[#8884c2] active:bg-[#4c4a6b]" @click="fetchPastData()">&leftarrow; een week terug</button>
+    <button class="p-[5px] rounded-xl bg-[#706ca1] text-[#dedede] hover:bg-[#8884c2] active:bg-[#4c4a6b]" @click="fetchNewData()">een week vooruit &rightarrow;</button>
   </div>
 </template>
 <style scoped>
