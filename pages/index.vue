@@ -33,35 +33,35 @@ const temperatureData = computed(() => {
   return data;
 });
 
-// const rainData = computed(() => {
-//   let data = [];
-//
-//   for (let fetchDataKey in fetchData.value) {
-//     const val = fetchData.value[fetchDataKey];
-//
-//     data.push([
-//       (new Date(val.timestamp)).getTime(),
-//       val.isRaining
-//     ])
-//   }
-//
-//   return data;
-// });
-//
-// const rainAmountData = computed(() => {
-//   let data = [];
-//
-//   for (let fetchDataKey in fetchData.value) {
-//     const val = fetchData.value[fetchDataKey];
-//
-//     data.push([
-//       (new Date(val.timestamp)).getTime(),
-//       val.rainfallMm
-//     ])
-//   }
-//
-//   return data;
-// });
+const rainData = computed(() => {
+  let data = [];
+
+  for (let fetchDataKey in fetchData.value) {
+    const val = fetchData.value[fetchDataKey];
+
+    data.push([
+      (new Date(val.timestamp)).getTime(),
+      val.isRaining
+    ])
+  }
+
+  return data;
+});
+
+const rainAmountData = computed(() => {
+  let data = [];
+
+  for (let fetchDataKey in fetchData.value) {
+    const val = fetchData.value[fetchDataKey];
+
+    data.push([
+      (new Date(val.timestamp)).getTime(),
+      val.rainfallMm
+    ])
+  }
+
+  return data;
+});
 
 const humidityData = computed(() => {
   let data = [];
@@ -186,30 +186,6 @@ const temperatureGraph = {
   }]
 }
 
-// const rainGraph = {
-//   chart: {
-//     zooming: {
-//       type: 'x'
-//     }
-//   },
-//   title: {
-//     text: 'Regen over tijd'
-//   },
-//   xAxis: {
-//     type: 'datetime',
-//   },
-//   yAxis: {
-//     title: {
-//       text: 'Regen'
-//     }
-//   },
-//   series: [{
-//     type: 'area',
-//     name: 'Regen',
-//     data: rainAmountData.value,
-//   }]
-// }
-
 const humidityGraph = {
   chart: {
     zooming: {
@@ -290,6 +266,7 @@ const graphTo = (newGraph) => {
 
 const getLatestData = (data) => {
   if(data.length <= 0) return "0";
+  if(data[data.length - 1].length <= 0) return  "0";
   return data[data.length - 1][1]
 }
 
@@ -312,24 +289,24 @@ const getOneWeekAhead = (referenceTime) => {
 const fetchFutureData = () => {
   startRange = endRange
   endRange = getOneWeekAhead(startRange)
-  fetchNewData(startRange, endRange)
+  fetchNewData(formatTime(startRange), formatTime(endRange))
   imageChange()
 }
 
 const fetchPastData = () => {
   endRange = startRange
   startRange = getOneWeekAgo(endRange)
-  fetchNewData(startRange, endRange)
+  fetchNewData(formatTime(startRange), formatTime(endRange))
   imageChange()
 }
 
 const imageChange = () => {
   if(temperatureData.value.length <= 0) {
   }
-  else if(getLatestData(temperatureData) <= -6){
+  else if(getLatestData(temperatureData.value) <= -6){
     document.getElementById("weatherImg").src="/media/cold.jpg";
   }
-  else if(getLatestData(temperatureData) <= 25){
+  else if(getLatestData(temperatureData.value) <= 25){
     document.getElementById("weatherImg").src="/media/normal.jpg";
   }
   else{
@@ -337,7 +314,9 @@ const imageChange = () => {
   }
 }
 
-imageChange()
+onMounted(()=>{
+  imageChange()
+})
 </script>
 <template>
 
@@ -350,16 +329,6 @@ imageChange()
       <p class="text-4xl">
         Temperatuur: {{getLatestData(temperatureData)}} &deg;C
       </p>
-
-<!--      <p class="text-4xl">-->
-<!--        Regen:-->
-<!--        <span v-if="getLatestData(rainData) === 1"> Ja</span>-->
-<!--        <span v-else> Nee</span>-->
-<!--      </p>-->
-
-<!--      <p class="text-4xl">-->
-<!--        Regenhoeveelheid: {{getLatestData(rainAmountData)}} mm/s-->
-<!--      </p>-->
 
       <p class="text-4xl">
         Luchtvochtigheid: {{getLatestData(humidityData)}}%
@@ -388,8 +357,6 @@ imageChange()
 
       <div class="dropdown-content hidden absolute z-[1] bg-[#e2e2e2] bg-opacity-80 rounded-xl">
         <div class="p-[5px] rounded-xl cursor-pointer hover:bg-[#ddd]" @click="graphTo(temperatureGraph)">Temperatuur over tijd</div>
-
-<!--        <div class="p-[5px] rounded-xl cursor-pointer hover:bg-[#ddd]" @click="graphTo(rainGraph)">Regen over tijd</div>-->
 
         <div class="p-[5px] rounded-xl cursor-pointer hover:bg-[#ddd]" @click="graphTo(humidityGraph)">Luchtvochtigheid over tijd</div>
 
