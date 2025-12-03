@@ -1,6 +1,6 @@
 <script setup lang="js">
 
-const currentTime = new Date();
+let currentTime = new Date();
 
 const fetchData = ref();
 
@@ -270,6 +270,14 @@ const fetchPastData = () => {
   imageChange()
 }
 
+const fetchCurrentData = () => {
+  currentTime = new Date();
+  endRange = currentTime;
+  startRange = new Date(currentTime.getTime() - 604800000);
+  fetchNewData(formatTime(startRange), formatTime(endRange))
+  imageChange()
+}
+
 const imageChange = () => {
   if(temperatureData.value.length <= 0) {
   }
@@ -342,6 +350,7 @@ onMounted(()=>{
   />
   <div class="m-[100px] flex justify-between">
     <button class="p-[5px] rounded-xl bg-[#706ca1] text-[#dedede] hover:bg-[#8884c2] active:bg-[#4c4a6b]" @click="fetchPastData()">&leftarrow; een week terug</button>
+    <button class="p-[5px] rounded-xl bg-[#706ca1] text-[#dedede] hover:bg-[#8884c2] active:bg-[#4c4a6b]" @click="fetchCurrentData()">huidige data</button>
     <button class="p-[5px] rounded-xl bg-[#706ca1] text-[#dedede] hover:bg-[#8884c2] active:bg-[#4c4a6b]" @click="fetchFutureData()">een week vooruit &rightarrow;</button>
   </div>
 </template>
