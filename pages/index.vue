@@ -9,7 +9,7 @@ let endRange = currentTime;
 let startRange = new Date(currentTime.getTime() - 604800000);
 
 const formatTime = (referenceTime) => {
-  return `${referenceTime.getFullYear()}-${referenceTime.getMonth() + 1}-${referenceTime.getDate()}`;
+  return `${(new Date (referenceTime)).getFullYear()}-${(new Date (referenceTime)).getMonth() + 1}-${(new Date (referenceTime)).getDate()}`;
 }
 
 const fetchNewData =  async (startRange, endRange) => {
@@ -27,36 +27,6 @@ const temperatureData = computed(() => {
     data.push([
       (new Date(val.timestamp)).getTime(),
       val.temperatureCelsius
-    ])
-  }
-
-  return data;
-});
-
-const rainData = computed(() => {
-  let data = [];
-
-  for (let fetchDataKey in fetchData.value) {
-    const val = fetchData.value[fetchDataKey];
-
-    data.push([
-      (new Date(val.timestamp)).getTime(),
-      val.isRaining
-    ])
-  }
-
-  return data;
-});
-
-const rainAmountData = computed(() => {
-  let data = [];
-
-  for (let fetchDataKey in fetchData.value) {
-    const val = fetchData.value[fetchDataKey];
-
-    data.push([
-      (new Date(val.timestamp)).getTime(),
-      val.rainfallMm
     ])
   }
 
@@ -182,7 +152,7 @@ const temperatureGraph = {
   series: [{
     type: 'area',
     name: '°C',
-    data: temperatureData.value,
+    data: temperatureData,
   }]
 }
 
@@ -206,7 +176,7 @@ const humidityGraph = {
   series: [{
     type: 'area',
     name: 'g/kg',
-    data: humidityData.value,
+    data: humidityData,
   }]
 }
 
@@ -230,7 +200,7 @@ const pressureGraph = {
   series: [{
     type: 'area',
     name: 'hPs',
-    data: pressureData.value,
+    data: pressureData,
   }]
 }
 
@@ -254,7 +224,7 @@ const qualityGraph = {
   series: [{
     type: 'area',
     name: 'ppm',
-    data: qualityData.value,
+    data: qualityData,
   }]
 }
 
@@ -277,12 +247,12 @@ const getLatestTime = () => {
 }
 
 const getOneWeekAgo = (referenceTime) => {
-  const weakAgo = new Date(referenceTime.getTime() - 604800000);
+  const weakAgo = new Date((new Date (referenceTime)).getTime() - 604800000);
   return formatTime(weakAgo)
 }
 
 const getOneWeekAhead = (referenceTime) => {
-  const weakAgo = new Date(referenceTime.getTime() + 604800000);
+  const weakAgo = new Date((new Date (referenceTime)).getTime() + 604800000);
   return formatTime(weakAgo)
 }
 
@@ -368,7 +338,7 @@ onMounted(()=>{
   </div>
   <highchart class="m-[100px]"
       :options="graph"
-      :update="['options.title', 'options.series', 'yAxis']"
+      :update="['options.title', 'options.series', 'options.yAxis']"
   />
   <div class="m-[100px] flex justify-between">
     <button class="p-[5px] rounded-xl bg-[#706ca1] text-[#dedede] hover:bg-[#8884c2] active:bg-[#4c4a6b]" @click="fetchPastData()">&leftarrow; een week terug</button>
