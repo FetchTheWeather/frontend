@@ -14,7 +14,7 @@ const loggedIn:boolean = true
             <p>Welcome name!</p>
           </div>
           <div class="w-[50px] m-[15px] rounded-full">
-            <img src="/media/png-transparent-rain-rain-blue-cloud-drop-thumbnail.png" class="rounded-full">
+            <img src="/media/profilePicture.png" class="rounded-full">
           </div>
         </a>
       </div>

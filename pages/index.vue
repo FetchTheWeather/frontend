@@ -324,7 +324,8 @@ const fetchPastData = () => {
 }
 
 const imageChange = () => {
-  if(temperatureData.value.length <= 0) return;
+  if(temperatureData.value.length <= 0) {
+  }
   else if(getLatestData(temperatureData) <= -6){
     document.getElementById("weatherImg").src="/media/cold.jpg";
   }

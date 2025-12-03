@@ -57,7 +57,7 @@ const isUnlocked = (id: string) => {
       </div>
     </div>
     <div class="min-w-[500px] max-w-[500px]">
-      <img class="rounded-3xl" src="/media/png-transparent-rain-rain-blue-cloud-drop-thumbnail.png" alt="">
+      <img class="rounded-3xl" src="/media/profilePicture.png" alt="">
       <div class="h-[calc(100%_-_500px)] flex flex-col justify-center">
         <div class="flex justify-between h-fit">
 
