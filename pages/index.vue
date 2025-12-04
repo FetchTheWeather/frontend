@@ -170,12 +170,12 @@ const humidityGraph = {
   },
   yAxis: {
     title: {
-      text: 'gram water per kilogram lucht (g/kg)'
+      text: ''
     }
   },
   series: [{
     type: 'area',
-    name: 'g/kg',
+    name: '%',
     data: humidityData,
   }]
 }
