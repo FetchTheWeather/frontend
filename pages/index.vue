@@ -2,7 +2,7 @@
 
 const {
   data: fetchData
-} = useFetch("http://localhost:5194/ws/weather/data")
+} = useFetch("https://ftw.pietr.dev/ws/weather/data")
 
 
 const temperatureData = computed(() => {
