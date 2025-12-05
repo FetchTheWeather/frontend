@@ -103,7 +103,7 @@ const setupGraph = {
       marker: {
         radius: 2
       },
-      lineWidth: 0.5,
+      lineWidth: 1,
       color: {
         linearGradient: {
           x1: 0,
@@ -118,7 +118,7 @@ const setupGraph = {
       },
       states: {
         hover: {
-          lineWidth: 5
+          lineWidth: 2
         }
       },
       threshold: null
