@@ -10,42 +10,13 @@ const threeDays = 172800000;
 
 const week = 604800000;
 
-let rangeType = day;
-
 const rangeTypeButton = ref(day);
 
 const userStartRange = ref()
 
 const userEndRange = ref()
 
-const formatTo = (timeToFormat) => {
-  if(timeToFormat.getMonth() >= 10 && timeToFormat.getDate() >= 10){
-    return `${(new Date (timeToFormat)).getFullYear()}-${(new Date (timeToFormat)).getMonth() + 1}-${(new Date (timeToFormat)).getDate()}`;
-  }
-  else if(timeToFormat.getMonth() >= 10 && timeToFormat.getDate() < 10){
-    return `${(new Date (timeToFormat)).getFullYear()}-${(new Date (timeToFormat)).getMonth() + 1}-0${(new Date (timeToFormat)).getDate()}`;
-  }
-  else if(timeToFormat.getMonth() < 10 && timeToFormat.getDate() >= 10){
-    return `${(new Date (timeToFormat)).getFullYear()}-0${(new Date (timeToFormat)).getMonth() + 1}-${(new Date (timeToFormat)).getDate()}`;
-  }
-  else if(timeToFormat.getMonth() < 10 && timeToFormat.getDate() < 10){
-    return `${(new Date (timeToFormat)).getFullYear()}-0${(new Date (timeToFormat)).getMonth() + 1}-0${(new Date (timeToFormat)).getDate()}`;
-  }
-}
-
-let currentTime = new Date();
-
 const fetchData = ref();
-
-let endRange = currentTime;
-
-let startRange = new Date (currentTime.getTime() - rangeType);
-
-const fetchNewData =  async (startRange, endRange) => {
-  fetchData.value = await $fetch(`https://ftw.pietr.dev/ws/weather/data/range?start=${startRange}&end=${endRange}`)
-}
-
-await fetchNewData(formatTo(startRange), formatTo(endRange))
 
 const temperatureData = computed(() => {
   let data = [];
@@ -259,11 +230,38 @@ const qualityGraph = {
 
 const graph = ref(setupGraph)
 
+let rangeType = day;
+
+let currentTime = new Date();
+
+let endRange = currentTime;
+
+let startRange = new Date (currentTime.getTime() - rangeType);
+
+const formatTime = (timeToFormat) => {
+  if(timeToFormat.getMonth() >= 10 && timeToFormat.getDate() >= 10){
+    return `${(new Date (timeToFormat)).getFullYear()}-${(new Date (timeToFormat)).getMonth() + 1}-${(new Date (timeToFormat)).getDate()}`;
+  }
+  else if(timeToFormat.getMonth() >= 10 && timeToFormat.getDate() < 10){
+    return `${(new Date (timeToFormat)).getFullYear()}-${(new Date (timeToFormat)).getMonth() + 1}-0${(new Date (timeToFormat)).getDate()}`;
+  }
+  else if(timeToFormat.getMonth() < 10 && timeToFormat.getDate() >= 10){
+    return `${(new Date (timeToFormat)).getFullYear()}-0${(new Date (timeToFormat)).getMonth() + 1}-${(new Date (timeToFormat)).getDate()}`;
+  }
+  else if(timeToFormat.getMonth() < 10 && timeToFormat.getDate() < 10){
+    return `${(new Date (timeToFormat)).getFullYear()}-0${(new Date (timeToFormat)).getMonth() + 1}-0${(new Date (timeToFormat)).getDate()}`;
+  }
+}
+
+const getNewData =  async (startRange, endRange) => {
+  fetchData.value = await $fetch(`https://sftw.pietr.dev/ws/weather/data/range?start=${startRange}&end=${endRange}`)
+}
+
 const graphTo = (newGraph) => {
   graph.value = newGraph
 }
 
-const getLatestData = (data) => {
+const returnLatestData = (data) => {
   if(data.length <= 0) return "0";
   if(data[data.length - 1].length <= 0) return  "0";
   return data[data.length - 1][1]
@@ -278,14 +276,12 @@ const fetchFutureData = async () => {
     endRange = new Date(endRange.getTime() + rangeTypeButton.value)
     startRange = new Date(startRange.getTime() + rangeTypeButton.value)
   }
-  //await fetchNewData(formatTo(startRange), formatTo(endRange))
-  userStartRange.value = formatTo(startRange)
-  userEndRange.value = formatTo(endRange)
+  userStartRange.value = formatTime(startRange)
+  userEndRange.value = formatTime(endRange)
   imageChange()
 }
 
 const fetchPastData = async () => {
-  console.log(endRange.getTime())
   if(rangeTypeButton.value === day){
     endRange = new Date(endRange.getTime() - twoDays)
     startRange = new Date(startRange.getTime() - twoDays)
@@ -294,10 +290,8 @@ const fetchPastData = async () => {
     endRange = new Date(endRange.getTime() - rangeTypeButton.value)
     startRange = new Date(startRange.getTime() - rangeTypeButton.value)
   }
-  console.log(endRange)
-  console.log(startRange)
-  userStartRange.value = formatTo(startRange)
-  userEndRange.value = formatTo(endRange)
+  userStartRange.value = formatTime(startRange)
+  userEndRange.value = formatTime(endRange)
 }
 
 const fetchCurrentData = async () => {
@@ -309,17 +303,17 @@ const fetchCurrentData = async () => {
   else{
     startRange = new Date(currentTime.getTime() - rangeType);
   }
-  userStartRange.value = formatTo(startRange)
-  userEndRange.value = formatTo(endRange)
+  userStartRange.value = formatTime(startRange)
+  userEndRange.value = formatTime(endRange)
 }
 
 const imageChange = () => {
   if(temperatureData.value.length <= 0) {
   }
-  else if(getLatestData(temperatureData.value) <= 5){
+  else if(returnLatestData(temperatureData.value) <= 5){
     document.getElementById("weatherImg").src="/media/cold.jpg";
   }
-  else if(getLatestData(temperatureData.value) <= 25){
+  else if(returnLatestData(temperatureData.value) <= 25){
     document.getElementById("weatherImg").src="/media/normal.jpg";
   }
   else{
@@ -337,19 +331,19 @@ const rangeTypeButtonTo = (type) => {
 }
 
 onMounted(()=>{
-  userStartRange.value = formatTo(startRange)
-  userEndRange.value = formatTo(endRange)
+  userStartRange.value = formatTime(startRange)
+  userEndRange.value = formatTime(endRange)
 })
 
 watch(userStartRange, async () => {
   startRange = new Date(userStartRange.value)
-  await fetchNewData(userStartRange.value, userEndRange.value)
+  await getNewData(userStartRange.value, userEndRange.value)
   imageChange()
 })
 
 watch(userEndRange, async () => {
   endRange = new Date(userEndRange.value)
-  await fetchNewData(userStartRange.value, userEndRange.value)
+  await getNewData(userStartRange.value, userEndRange.value)
   imageChange()
 })
 
@@ -363,19 +357,19 @@ watch(userEndRange, async () => {
       <p class="bold text-6xl">Data:</p>
 
       <p class="text-4xl">
-        Temperatuur: {{getLatestData(temperatureData)}} &deg;C
+        Temperatuur: {{returnLatestData(temperatureData)}} &deg;C
       </p>
 
       <p class="text-4xl">
-        Luchtvochtigheid: {{getLatestData(humidityData)}}%
+        Luchtvochtigheid: {{returnLatestData(humidityData)}}%
       </p>
 
       <p class="text-4xl">
-        Luchtdruk: {{getLatestData(pressureData)}} hPs
+        Luchtdruk: {{returnLatestData(pressureData)}} hPs
       </p>
 
       <p class="text-4xl">
-        Luchtkwaliteit: {{getLatestData(qualityData)}} ppm
+        Luchtkwaliteit: {{returnLatestData(qualityData)}} ppm
       </p>
       <p class="text-4xl">
         Begindatum data:
