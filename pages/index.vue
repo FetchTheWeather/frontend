@@ -1,12 +1,25 @@
 <script setup lang="js">
 
-const {
-  data: fetchData
-} = useFetch("https://ftw.pietr.dev/ws/weather/data")
+let currentTime = new Date();
 
+const fetchData = ref();
+
+let endRange = currentTime;
+
+let startRange = new Date(currentTime.getTime() - 604800000);
+
+const formatTime = (referenceTime) => {
+  return `${(new Date (referenceTime)).getFullYear()}-${(new Date (referenceTime)).getMonth() + 1}-${(new Date (referenceTime)).getDate()}`;
+}
+
+const fetchNewData =  async (startRange, endRange) => {
+  fetchData.value = await $fetch(`https://ftw.pietr.dev/ws/weather/data/range?start=${startRange}&end=${endRange}`)
+}
+
+await fetchNewData(formatTime(startRange), formatTime(endRange))
 
 const temperatureData = computed(() => {
-  let data= [];
+  let data = [];
 
   for (let fetchDataKey in fetchData.value) {
     const val = fetchData.value[fetchDataKey];
@@ -14,36 +27,6 @@ const temperatureData = computed(() => {
     data.push([
       (new Date(val.timestamp)).getTime(),
       val.temperatureCelsius
-    ])
-  }
-
-  return data;
-});
-
-const rainData = computed(() => {
-  let data = [];
-
-  for (let fetchDataKey in fetchData.value) {
-    const val = fetchData.value[fetchDataKey];
-
-    data.push([
-      (new Date(val.timestamp)).getTime(),
-      val.isRaining
-    ])
-  }
-
-  return data;
-});
-
-const rainAmountData = computed(() => {
-  let data = [];
-
-  for (let fetchDataKey in fetchData.value) {
-    const val = fetchData.value[fetchDataKey];
-
-    data.push([
-      (new Date(val.timestamp)).getTime(),
-      val.rainfallMm
     ])
   }
 
@@ -58,7 +41,7 @@ const humidityData = computed(() => {
 
     data.push([
       (new Date(val.timestamp)).getTime(),
-      val.humidityPercent //TODO percent??????
+      val.humidityPercent
     ])
   }
 
@@ -80,7 +63,7 @@ const pressureData = computed(() => {
   return data;
 });
 
-const windSpeedData = computed(() => {
+const qualityData = computed(() => {
   let data = [];
 
   for (let fetchDataKey in fetchData.value) {
@@ -88,7 +71,7 @@ const windSpeedData = computed(() => {
 
     data.push([
       (new Date(val.timestamp)).getTime(),
-      val.windSpeedKph
+      val.airQualityPpm
     ])
   }
 
@@ -145,7 +128,7 @@ const setupGraph = {
   series: [{
     type: 'area',
     name: '',
-    data: [0],
+    data: [[[0,1],[1,1]],[[0,1],[1,1]]],
   }]
 }
 
@@ -169,31 +152,7 @@ const temperatureGraph = {
   series: [{
     type: 'area',
     name: '°C',
-    data: temperatureData.value,
-  }]
-}
-
-const rainGraph = {
-  chart: {
-    zooming: {
-      type: 'x'
-    }
-  },
-  title: {
-    text: 'Regen over tijd'
-  },
-  xAxis: {
-    type: 'datetime',
-  },
-  yAxis: {
-    title: {
-      text: 'Regen'
-    }
-  },
-  series: [{
-    type: 'area',
-    name: 'Regen',
-    data: rainAmountData.value,
+    data: temperatureData,
   }]
 }
 
@@ -217,7 +176,7 @@ const humidityGraph = {
   series: [{
     type: 'area',
     name: 'g/kg',
-    data: humidityData.value,
+    data: humidityData,
   }]
 }
 
@@ -241,51 +200,101 @@ const pressureGraph = {
   series: [{
     type: 'area',
     name: 'hPs',
-    data: pressureData.value,
+    data: pressureData,
   }]
 }
 
-const windSpeedGraph = {
+const qualityGraph = {
   chart: {
     zooming: {
       type: 'x'
     }
   },
   title: {
-    text: 'windsnelheid over tijd'
+    text: 'Luchtkwaliteit over tijd'
   },
   xAxis: {
     type: 'datetime',
   },
   yAxis: {
     title: {
-      text: 'kilometer per uur (Km/h)'
+      text: 'parts per million (ppm)'
     }
   },
   series: [{
     type: 'area',
-    name: 'Km/h',
-    data: windSpeedData.value,
+    name: 'ppm',
+    data: qualityData,
   }]
 }
 
 const graph = ref(setupGraph)
 
 const graphTo = (newGraph) => {
-  console.log(graph.value)
-  console.log(newGraph)
   graph.value = newGraph
 }
 
 const getLatestData = (data) => {
+  if(data.length <= 0) return "0";
+  if(data[data.length - 1].length <= 0) return  "0";
   return data[data.length - 1][1]
 }
 
 const getLatestTime = () => {
+  if(temperatureData.value.length <= 0) return "0";
   let time = new Date(temperatureData.value[temperatureData.value.length - 1][0])
   return time.toLocaleString()
 }
 
+const getOneWeekAgo = (referenceTime) => {
+  const weakAgo = new Date((new Date (referenceTime)).getTime() - 604800000);
+  return formatTime(weakAgo)
+}
+
+const getOneWeekAhead = (referenceTime) => {
+  const weakAgo = new Date((new Date (referenceTime)).getTime() + 604800000);
+  return formatTime(weakAgo)
+}
+
+const fetchFutureData = () => {
+  startRange = endRange
+  endRange = getOneWeekAhead(startRange)
+  fetchNewData(formatTime(startRange), formatTime(endRange))
+  imageChange()
+}
+
+const fetchPastData = () => {
+  endRange = startRange
+  startRange = getOneWeekAgo(endRange)
+  fetchNewData(formatTime(startRange), formatTime(endRange))
+  imageChange()
+}
+
+const fetchCurrentData = () => {
+  currentTime = new Date();
+  endRange = currentTime;
+  startRange = new Date(currentTime.getTime() - 604800000);
+  fetchNewData(formatTime(startRange), formatTime(endRange))
+  imageChange()
+}
+
+const imageChange = () => {
+  if(temperatureData.value.length <= 0) {
+  }
+  else if(getLatestData(temperatureData.value) <= -6){
+    document.getElementById("weatherImg").src="/media/cold.jpg";
+  }
+  else if(getLatestData(temperatureData.value) <= 25){
+    document.getElementById("weatherImg").src="/media/normal.jpg";
+  }
+  else{
+    document.getElementById("weatherImg").src="/media/hot.jpg";
+  }
+}
+
+onMounted(()=>{
+  imageChange()
+})
 </script>
 <template>
 
@@ -296,59 +305,54 @@ const getLatestTime = () => {
       <p class="bold text-6xl">Data:</p>
 
       <p class="text-4xl">
-        <span>Temperatuur:</span> <span>{{getLatestData(temperatureData)}}</span> <span>&deg;C</span>
+        Temperatuur: {{getLatestData(temperatureData)}} &deg;C
       </p>
 
       <p class="text-4xl">
-        <span>Regen:</span>
-        <span v-if="getLatestData(rainData) === 1"> Ja</span>
-        <span v-else> Nee</span>
+        Luchtvochtigheid: {{getLatestData(humidityData)}}%
       </p>
 
       <p class="text-4xl">
-        <span>Regenhoeveelheid:</span> <span>{{getLatestData(rainAmountData)}}</span> <span>mm/s</span>
+        Luchtdruk: {{getLatestData(pressureData)}} hPs
       </p>
 
       <p class="text-4xl">
-         <span>Luchtvochtigheid:</span> <span>{{getLatestData(humidityData)}}</span> <span>%</span>
+        Luchtkwaliteit: {{getLatestData(qualityData)}} ppm
       </p>
 
       <p class="text-4xl">
-        <span>Luchtdruk:</span> <span>{{getLatestData(pressureData)}}</span> <span>hPs</span>
-      </p>
-
-      <p class="text-4xl">
-        <span>Windsnelheid:</span> <span>{{getLatestData(windSpeedData)}}</span> <span>Km/h</span>
-      </p>
-
-      <p class="text-4xl">
-        <span>Tijd:</span> <span>{{getLatestTime()}}</span>
+        Tijd: {{getLatestTime()}}
       </p>
     </div>
-    <img src="/media/png-transparent-rain-rain-blue-cloud-drop-thumbnail.png">
+    <div>
+      <img src="/media/normal.jpg" id="weatherImg" class="rounded-2xl">
+    </div>
   </div>
   <div class="m-[100px]">
     <div class="group relative inline-block dropdown">
 
-      <button class="bg-[#706ca1] p-[10px] rounded-full">Wissel grafiek</button>
+      <button class="bg-[#706ca1] p-[10px] text-[#dedede] rounded-full">Wissel grafiek &blacktriangledown;</button>
 
       <div class="dropdown-content hidden absolute z-[1] bg-[#e2e2e2] bg-opacity-80 rounded-xl">
         <div class="p-[5px] rounded-xl cursor-pointer hover:bg-[#ddd]" @click="graphTo(temperatureGraph)">Temperatuur over tijd</div>
-
-        <div class="p-[5px] rounded-xl cursor-pointer hover:bg-[#ddd]" @click="graphTo(rainGraph)">Regen over tijd</div>
 
         <div class="p-[5px] rounded-xl cursor-pointer hover:bg-[#ddd]" @click="graphTo(humidityGraph)">Luchtvochtigheid over tijd</div>
 
         <div class="p-[5px] rounded-xl cursor-pointer hover:bg-[#ddd]" @click="graphTo(pressureGraph)">Luchtdruk over tijd</div>
 
-       <div class="p-[5px] rounded-xl cursor-pointer hover:bg-[#ddd]" @click="graphTo(windSpeedGraph)">Windsnelheid over tijd</div>
+       <div class="p-[5px] rounded-xl cursor-pointer hover:bg-[#ddd]" @click="graphTo(qualityGraph)">Luchtkwaliteit over tijd</div>
       </div>
     </div>
   </div>
   <highchart class="m-[100px]"
       :options="graph"
-      :update="['options.title', 'options.series']"
+      :update="['options.title', 'options.series', 'options.yAxis']"
   />
+  <div class="m-[100px] flex justify-between">
+    <button class="p-[5px] rounded-xl bg-[#706ca1] text-[#dedede] hover:bg-[#8884c2] active:bg-[#4c4a6b]" @click="fetchPastData()">&leftarrow; een week terug</button>
+    <button class="p-[5px] rounded-xl bg-[#706ca1] text-[#dedede] hover:bg-[#8884c2] active:bg-[#4c4a6b]" @click="fetchCurrentData()">huidige data</button>
+    <button class="p-[5px] rounded-xl bg-[#706ca1] text-[#dedede] hover:bg-[#8884c2] active:bg-[#4c4a6b]" @click="fetchFutureData()">een week vooruit &rightarrow;</button>
+  </div>
 </template>
 <style scoped>
 .dropdown:hover .dropdown-content {display: block;}
