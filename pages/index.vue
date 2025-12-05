@@ -25,7 +25,7 @@ const temperatureData = computed(() => {
     const val = fetchData.value[fetchDataKey];
 
     data.push([
-      (new Date(val.timestamp)).getTime(),
+      (new Date(val.timestamp)).getTime() + 3600000,
       val.temperatureCelsius
     ])
   }
@@ -40,7 +40,7 @@ const humidityData = computed(() => {
     const val = fetchData.value[fetchDataKey];
 
     data.push([
-      (new Date(val.timestamp)).getTime(),
+      (new Date(val.timestamp)).getTime() + 3600000,
       val.humidityPercent
     ])
   }
@@ -55,8 +55,8 @@ const pressureData = computed(() => {
     const val = fetchData.value[fetchDataKey];
 
     data.push([
-      (new Date(val.timestamp)).getTime(),
-      val.airPressureHpa
+      (new Date(val.timestamp)).getTime() + 3600000,
+      Math.round((val.airPressureHpa/100) * 100)/100
     ])
   }
 
@@ -70,8 +70,8 @@ const qualityData = computed(() => {
     const val = fetchData.value[fetchDataKey];
 
     data.push([
-      (new Date(val.timestamp)).getTime(),
-      val.airQualityPpm
+      (new Date(val.timestamp)).getTime() + 3600000,
+      Math.round(val.airQualityPpm * 100)/100
     ])
   }
 
@@ -242,7 +242,7 @@ const getLatestData = (data) => {
 
 const getLatestTime = () => {
   if(temperatureData.value.length <= 0) return "0";
-  let time = new Date(temperatureData.value[temperatureData.value.length - 1][0])
+  let time = new Date(temperatureData.value[temperatureData.value.length - 1][0] - 3600000)
   return time.toLocaleString()
 }
 
