@@ -23,8 +23,6 @@ const authStore = useAuthStore()
       </div>
     </div>
   </div>
-
-
 </template>
 
 <style scoped>
