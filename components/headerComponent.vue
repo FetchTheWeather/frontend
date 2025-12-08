@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const loggedIn:boolean = true
+const authStore = useAuthStore()
 </script>
 
 <template>
@@ -8,7 +8,7 @@ const loggedIn:boolean = true
       <h1><nuxt-link to="/">Fetch the weather</nuxt-link></h1>
     </div>
     <div>
-      <div v-if="loggedIn">
+      <div v-if="authStore.isLoggedIn">
         <nuxt-link to="/profile" class="flex justify-between">
           <div class="content-center text-2xl">
             <p>Welkom name!</p>
@@ -18,13 +18,11 @@ const loggedIn:boolean = true
           </div>
         </nuxt-link>
       </div>
-      <div v-else-if="!loggedIn">
+      <div v-else-if="!authStore.isLoggedIn">
         <p><nuxt-link to="/login">Log in</nuxt-link></p>
       </div>
     </div>
   </div>
-
-
 </template>
 
 <style scoped>

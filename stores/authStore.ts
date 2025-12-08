@@ -9,7 +9,6 @@ export const useAuthStore = defineStore('AuthStore', {
         loginResponse: ref<SuccessResponse | undefined>(undefined)
     }),
     actions: {
-
         async login(email: string, password: string): Promise<ValidationResponse> {
 
             const schema = z.object({
@@ -54,5 +53,5 @@ export const useAuthStore = defineStore('AuthStore', {
             }
         }
     },
-    getters: {}
+    persist: true
 });
