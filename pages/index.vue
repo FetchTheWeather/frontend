@@ -267,7 +267,7 @@ const returnLatestData = (data) => {
   return data[data.length - 1][1]
 }
 
-const fetchFutureData = async () => {
+const fetchFutureData = () => {
   if(rangeTypeButton.value === day){
     endRange = new Date((endRange.getTime() + twoDays))
     startRange = new Date((startRange.getTime() + twoDays))
@@ -281,7 +281,7 @@ const fetchFutureData = async () => {
   imageChange()
 }
 
-const fetchPastData = async () => {
+const fetchPastData = () => {
   if(rangeTypeButton.value === day){
     endRange = new Date(endRange.getTime() - twoDays)
     startRange = new Date(startRange.getTime() - twoDays)
@@ -294,14 +294,15 @@ const fetchPastData = async () => {
   userEndRange.value = formatTime(endRange)
 }
 
-const fetchCurrentData = async () => {
+const fetchCurrentData = () => {
   currentTime = new Date();
-  endRange = currentTime;
   if(rangeType === week){
     startRange = new Date(currentTime.getTime() - (currentTime.getDay() * twoDays));
+    endRange = new Date(startRange.getTime() + week);
   }
   else{
     startRange = new Date(currentTime.getTime() - rangeType);
+    endRange = currentTime
   }
   userStartRange.value = formatTime(startRange)
   userEndRange.value = formatTime(endRange)
@@ -365,7 +366,7 @@ watch(userEndRange, async () => {
       </p>
 
       <p class="text-4xl">
-        Luchtdruk: {{returnLatestData(pressureData)}} hPs
+        Luchtdruk: {{returnLatestData(pressureData)}} hPa
       </p>
 
       <p class="text-4xl">
