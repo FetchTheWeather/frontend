@@ -21,6 +21,16 @@ const login = async () => {
 
   await router.push("/")
 }
+
+const checkLoggedIn = async () => {
+  if(authStore.isLoggedIn){
+    await router.push("/")
+  }
+}
+
+onMounted(() => {
+  checkLoggedIn()
+})
 </script>
 
 <template>
@@ -41,7 +51,7 @@ const login = async () => {
 
       <div>
         <label class="text-md font-bold mb-5 block">
-          Password
+          Wachtwoord
         </label>
 
         <input

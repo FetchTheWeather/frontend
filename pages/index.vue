@@ -296,12 +296,13 @@ const fetchPastData = () => {
 
 const fetchCurrentData = () => {
   currentTime = new Date();
-  endRange = currentTime;
   if(rangeType === week){
     startRange = new Date(currentTime.getTime() - (currentTime.getDay() * twoDays));
+    endRange = new Date(startRange.getTime() + week);
   }
   else{
     startRange = new Date(currentTime.getTime() - rangeType);
+    endRange = currentTime
   }
   userStartRange.value = formatTime(startRange)
   userEndRange.value = formatTime(endRange)

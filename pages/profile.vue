@@ -2,17 +2,19 @@
 import type {Collectable} from "~/types/models/Collectable";
 
 const userData: {
-  Email : string
-  UnlockedAchievements: string[]
+  email : string
+  unlockedAchievements: string[]
 } =
   await $fetch(`https://ftw.pietr.dev/auth/identity/me`, {
     method: 'GET',
-    headers: {'authorization': `Bearer ${useAuthStore().loginResponse?.accessToken}`}
-  });
+    headers: {'authorization': `Bearer ${useAuthStore().loginResponse?.token}`}
+});
 
-const email = ref<string>(userData.Email);
+const email = ref<string>(userData.email);
 
-const unlocked = ref<string[]>(userData.UnlockedAchievements);
+const router = useRouter()
+
+const unlocked = ref<string[]>(userData.unlockedAchievements);
 
 // /api/collection
 const collection: Collectable[] = [
@@ -42,6 +44,35 @@ const collection: Collectable[] = [
 const isUnlocked = (id: string) => {
   return unlocked.value.find((str) => str === id) != undefined;
 }
+
+const logOut = async () => {
+  await router.push("/")
+}
+
+const changeEmail = () => {
+  let newEmail = prompt("Vul een nieuwe email in:", "email@example.com")
+  $fetch('https://ftw.pietr.dev/auth/manage/info', {
+    method: 'POST',
+    body: {"newEmail": newEmail},
+    headers: {'authorization': `Bearer ${useAuthStore().loginResponse?.token}`}
+  })
+  router.push("/profile")
+}
+
+const changePassword = () => {
+  let oldPassword = prompt("vul je oude wachtwoord in:")
+  let newPassword = prompt("Vul een nieuw wachtwoord in:")
+  $fetch('https://ftw.pietr.dev/auth/manage/info', {
+    method: 'POST',
+    body: {
+      "newPassword": newPassword,
+      "oldPassword": oldPassword
+    },
+    headers: {'authorization': `Bearer ${useAuthStore().loginResponse?.token}`}
+  })
+  router.push("/profile")
+}
+
 </script>
 
 <template>
@@ -65,10 +96,10 @@ const isUnlocked = (id: string) => {
 
           <!--TODO make the buttons functional-->
 
-          <button class="bg-[#706ca1] hover:bg-[#8884c2] active:bg-[#4c4a6b] m-[10px] p-[10px] text-[#dedede] rounded-full">email veranderen</button>
+<!--          <button @click="changeEmail()" class="bg-[#706ca1] hover:bg-[#8884c2] active:bg-[#4c4a6b] m-[10px] p-[10px] text-[#dedede] rounded-full">email veranderen</button>-->
 <!--          <button class="bg-[#706ca1] hover:bg-[#8884c2] active:bg-[#4c4a6b] m-[10px] p-[10px] text-[#dedede] rounded-full">profielfoto veranderen</button>-->
-          <button class="bg-[#706ca1] hover:bg-[#8884c2] active:bg-[#4c4a6b] m-[10px] p-[10px] text-[#dedede] rounded-full">wachtwoord veranderen</button>
-          <button @click="useAuthStore().logOut()" class="bg-[#ff4747] hover:bg-[#fc6060] active:bg-[#f72a2a] m-[10px] p-[10px] text-[#dedede] rounded-full">uitloggen</button>
+          <button @click="changePassword()" class="bg-[#706ca1] hover:bg-[#8884c2] active:bg-[#4c4a6b] m-[10px] p-[10px] text-[#dedede] rounded-full">wachtwoord veranderen</button>
+          <button @click="useAuthStore().logOut(); logOut()" class="bg-[#ff4747] hover:bg-[#fc6060] active:bg-[#f72a2a] min-w-[45%] m-[10px] p-[10px] text-[#dedede] rounded-full">uitloggen</button>
         </div>
       </div>
     </div>

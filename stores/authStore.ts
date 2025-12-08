@@ -29,7 +29,7 @@ export const useAuthStore = defineStore('AuthStore', {
             }
 
             try {
-                const result = await $fetch<SuccessResponse>("https://ftw.pietr.dev/auth/login", {
+                const result = await $fetch<SuccessResponse>("https://ftw.pietr.dev/auth/identity/login", {
                     method: "POST",
                     body: {
                         email: email,
