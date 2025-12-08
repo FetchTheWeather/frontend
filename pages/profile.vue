@@ -1,8 +1,18 @@
 <script setup lang="ts">
 import type {Collectable} from "~/types/models/Collectable";
 
-const name: string = "john mcjohn"
-const email: string = "john@johnmail.com"
+const userData: {
+  Email : string
+  UnlockedAchievements: string[]
+} =
+  await $fetch(`https://ftw.pietr.dev/auth/identity/me`, {
+    method: 'GET',
+    headers: {'authorization': `Bearer ${useAuthStore().loginResponse?.accessToken}`}
+  });
+
+const email = ref<string>(userData.Email);
+
+const unlocked = ref<string[]>(userData.UnlockedAchievements);
 
 // /api/collection
 const collection: Collectable[] = [
@@ -29,22 +39,14 @@ const collection: Collectable[] = [
   {id: "21", name: "test achievement, please ignore"}
 ]
 
-// /api/collection/{userId}
-const unlocked: string[] = [
-  "2", "3", "4", "9", "14", "1"
-]
-
 const isUnlocked = (id: string) => {
-  return unlocked.find((str) => str === id) != undefined;
+  return unlocked.value.find((str) => str === id) != undefined;
 }
 </script>
 
 <template>
   <div class="m-[100px] flex justify-between">
     <div>
-      <p class="text-4xl mb-[20px]">
-        Naam: {{name}}
-      </p>
       <p class="text-4xl mb-[20px]">
         Email: {{email}}
       </p>
@@ -64,9 +66,9 @@ const isUnlocked = (id: string) => {
           <!--TODO make the buttons functional-->
 
           <button class="bg-[#706ca1] hover:bg-[#8884c2] active:bg-[#4c4a6b] m-[10px] p-[10px] text-[#dedede] rounded-full">email veranderen</button>
-          <button class="bg-[#706ca1] hover:bg-[#8884c2] active:bg-[#4c4a6b] m-[10px] p-[10px] text-[#dedede] rounded-full">profielfoto veranderen</button>
+<!--          <button class="bg-[#706ca1] hover:bg-[#8884c2] active:bg-[#4c4a6b] m-[10px] p-[10px] text-[#dedede] rounded-full">profielfoto veranderen</button>-->
           <button class="bg-[#706ca1] hover:bg-[#8884c2] active:bg-[#4c4a6b] m-[10px] p-[10px] text-[#dedede] rounded-full">wachtwoord veranderen</button>
-          <button class="bg-[#ff4747] hover:bg-[#fc6060] active:bg-[#f72a2a] m-[10px] p-[10px] text-[#dedede] rounded-full">uitloggen</button>
+          <button @click="useAuthStore().logOut()" class="bg-[#ff4747] hover:bg-[#fc6060] active:bg-[#f72a2a] m-[10px] p-[10px] text-[#dedede] rounded-full">uitloggen</button>
         </div>
       </div>
     </div>

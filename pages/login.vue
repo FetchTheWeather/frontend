@@ -24,7 +24,7 @@ const login = async () => {
 </script>
 
 <template>
-  <div class="flex items-center justify-center">
+  <div class="flex items-center justify-center mt-[100px]">
     <div class="bg-white p-10 rounded-lg shadow-lg w-96">
 
       <div>
@@ -54,7 +54,7 @@ const login = async () => {
       <div class="mt-5">
         <div
             v-if="errors"
-            style="color:red;"
+            class="text-red-600 mb-[30px]"
         >
           {{ errors }}
         </div>

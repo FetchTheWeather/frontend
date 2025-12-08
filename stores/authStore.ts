@@ -12,8 +12,8 @@ export const useAuthStore = defineStore('AuthStore', {
         async login(email: string, password: string): Promise<ValidationResponse> {
 
             const schema = z.object({
-                email: z.email("Invalid email"),
-                password: z.string().min(6, "Password must be atleast 6 characters"),
+                email: z.email("Invalide E-mail"),
+                password: z.string().min(6, "Wachtwoord moet ten minste 6 karakters zijn"),
             });
 
             const validation = schema.safeParse({
@@ -24,12 +24,12 @@ export const useAuthStore = defineStore('AuthStore', {
             if (!validation.success) {
                 return {
                     success: false,
-                    message: "Login failed",
+                    message: "Gefaald om in te loggen",
                 }
             }
 
             try {
-                const result = await $fetch<SuccessResponse>("http://localhost:5052/login", {
+                const result = await $fetch<SuccessResponse>("https://ftw.pietr.dev/auth/login", {
                     method: "POST",
                     body: {
                         email: email,
@@ -51,6 +51,11 @@ export const useAuthStore = defineStore('AuthStore', {
                     message: "Login failed.",
                 }
             }
+        },
+
+        logOut(): void {
+            this.loginResponse = undefined
+            this.isLoggedIn = false
         }
     },
     persist: true
