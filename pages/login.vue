@@ -73,7 +73,7 @@ onMounted(() => {
             class="bg-[#706CA1] hover:bg-[#8884c2] active:bg-[#4c4a6b] text-[#dedede] px-4 py-2 rounded-lg"
             @click="login"
         >
-          Login
+          Log in
         </button>
       </div>
     </div>
