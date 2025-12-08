@@ -11,7 +11,7 @@ const authStore = useAuthStore()
       <div v-if="authStore.isLoggedIn">
         <nuxt-link to="/profile" class="flex justify-between">
           <div class="content-center text-2xl">
-            <p>Welcome name!</p>
+            <p>Welkom name!</p>
           </div>
           <div class="w-[50px] m-[15px] rounded-full">
             <img src="/media/profilePicture.png" class="rounded-full">
